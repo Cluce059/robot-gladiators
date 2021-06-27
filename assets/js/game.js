@@ -1,12 +1,14 @@
+//player stats
 var playerName = window.prompt("What is your robot's name?");
 var playerHealth = 100;
 var playerAttack = 10;
 var playerMoney = 10;
-
+//robot stats
 var enemyNames = ["Roborto" , "Amy Android", "Robo Trumble"];
 var enemyHealth = 50;
 var enemyAttack = 12;
 
+//fight function
 var fight = function(enemyName){
     while(enemyHealth > 0 && playerHealth > 0){
         var promptFight = window.prompt("Would you like to FIGHT or SKIP this battle? Enter 'FIGHT' or 'SKIP' to choose.");
@@ -56,6 +58,8 @@ var fight = function(enemyName){
 //    * Fight all enemy-robots
 //    * Defeat each enemy-robot
 // "LOSE" - Player robot's health is zero or less
+
+//startgame function
 var startGame = function(){
     //reset stats
     playerHealth = 100;
@@ -68,9 +72,15 @@ var startGame = function(){
             var pickedEnemyName = enemyNames[i];
             //reset enemyHealth before starting new fight
             enemyHealth = 50;
-            debugger;
             //pass new enemy into fight
             fight(pickedEnemyName);  
+            //if this isnt the last enemy, option to shop
+            if(playerHealth > 0 && i < enemyNames.length -1){
+                var storeConfirm = window.confirm("The fight is over, visit the shop before next round?");
+                if(storeConfirm){
+                    shop();
+                }
+            }
         }
         else {
             window.alert("You have lost your robot in battle! Game Over!");
@@ -79,6 +89,7 @@ var startGame = function(){
     }
     endGame();
 };
+//endgame function
 var endGame = function(){
      window.alert("The game has now ended. Let's see how you did!");
     if(playerHealth > 0){
@@ -95,6 +106,45 @@ var endGame = function(){
         window.alert("Thank you for playing robot gladiators! come back soon!");
     }
 };
+//shop function
+var shop = function(){
+    var shopOptionPrompt = window.prompt("Would you like to REFILL your health, UPGRADE your attack, or LEAVE the store? Please enter one: 'REFILL', 'UPGRADE', or 'LEAVE' to make a choice."); 
+    switch(shopOptionPrompt){
+        case "REFILL":
+        case "refill":
+            if(playerMoney >= 7){
+                window.alert("Refilling player's health by 20 for 7 doll hairs");
+                //buy health with mons
+                playerHealth = playerHealth +20;
+                playerMoney = playerMoney - 7;
+            }
+            else{
+                window.alert("Too poor!");
+            }
+            break;
+        case "UPGRADE":
+        case "upgrade":
+            if(playerMoney >= 7){
+                window.alert("Upgrading player's attack by 6 for 7 dol hairs");
+                //buy attack pts
+                playerAttack = playerAttack +6;
+                playerMoney = playerMoney - 7;
+            }
+            else{
+                window.alert("Too poor!");
+            }
+            break;
+        case "LEAVE":
+        case "leave":
+            window.alert("Leaving the store.");
+            break;
+        default:
+            window.alert("You did not pick a valid option, please do better.");
+            shop();
+            break;
+    }
+};
+
 startGame();
 
 //wrap logic in startGame() function
