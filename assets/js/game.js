@@ -5,7 +5,7 @@ var playerAttack = 10;
 var playerMoney = 10;
 //robot stats
 var enemyNames = ["Roborto" , "Amy Android", "Robo Trumble"];
-var enemyHealth = 50;
+var enemyHealth = Math.floor(Math.random() * 60); /*specifies random range between 0 and 59.xx... math.flor solidifies that to 0-59 range */
 var enemyAttack = 12;
 
 //fight function
@@ -19,13 +19,13 @@ var fight = function(enemyName){
             if(confirmSkip){
                 window.alert(playerName + " has decided to skip this fight. Goodbye!");
                 //subtract playermoney
-                playerMoney = playerMoney - 10;
+                playerMoney = Math.max(0, playerMoney - 10);
                 console.log("playerMoney", playerMoney);
                 break;
             }
          }
             //subtract playerAttack from enemyHealth
-            enemyHealth = enemyHealth - playerAttack;
+            enemyHealth = Math.max(0, enemyHealth - playerAttack);
             console.log(playerName +" attacked " + enemyName + ". " + enemyName + " now has " + enemyHealth + " health remaining."
             );
         //check enemyHealth
@@ -37,7 +37,8 @@ var fight = function(enemyName){
             window.alert(enemyNames +" still has " + enemyHealth + " health left.");
         }
         //subtract enemyAttack from playerHealth
-        playerHealth = playerHealth - enemyAttack;
+        var damage = randomNumber(enemyAttack -3, enemyAttack);
+        playerHealth = Math.max(0, playerHealth - damage);
         console.log(
             enemyName + " attacked " + playerName + ". " + playerName + " now has " + playerHealth + " health remaining."
         );
@@ -70,8 +71,8 @@ var startGame = function(){
             window.alert("Welcome to Robot Gladiators!  Round " + (i + 1));
             //pick new enemy
             var pickedEnemyName = enemyNames[i];
-            //reset enemyHealth before starting new fight
-            enemyHealth = 50;
+            //reset enemyHealth before starting new fight between 20-60
+            enemyHealth = randomNumber(40, 60);
             //pass new enemy into fight
             fight(pickedEnemyName);  
             //if this isnt the last enemy, option to shop
@@ -145,6 +146,10 @@ var shop = function(){
     }
 };
 
+var randomNumber =function(min, max){
+    var value = Math.floor(Math.random() * (max - min + 1)) + min;
+    return value;
+};
 startGame();
 
 //wrap logic in startGame() function
