@@ -1,55 +1,47 @@
-//player stats
-var playerName = window.prompt("What is your robot's name?");
-var playerHealth = 100;
-var playerAttack = 10;
-var playerMoney = 10;
-//robot stats
-var enemyNames = ["Roborto" , "Amy Android", "Robo Trumble"];
-var enemyHealth = Math.floor(Math.random() * 60); /*specifies random range between 0 and 59.xx... math.flor solidifies that to 0-59 range */
-var enemyAttack = 12;
 
 //fight function
-var fight = function(enemyName){
-    while(enemyHealth > 0 && playerHealth > 0){
+var fight = function(enemy){
+    console.log(enemy);
+    while(enemy.health> 0 && playerInfo.health > 0){
         var promptFight = window.prompt("Would you like to FIGHT or SKIP this battle? Enter 'FIGHT' or 'SKIP' to choose.");
         //if skip is chosen
         if(promptFight == "skip" || promptFight == "SKIP"){
             var confirmSkip = window.confirm(" Are you sure you'd like to quit?");
             //if true exit fight
             if(confirmSkip){
-                window.alert(playerName + " has decided to skip this fight. Goodbye!");
+                window.alert(playerInfo.name+ " has decided to skip this fight. Goodbye!");
                 //subtract playermoney
-                playerMoney = Math.max(0, playerMoney - 10);
-                console.log("playerMoney", playerMoney);
+                playerInfo.money = Math.max(0, playerInfo.money - 10);
+                console.log("playerMoney", playerInfo.money);
                 break;
             }
          }
             //subtract playerAttack from enemyHealth
-            enemyHealth = Math.max(0, enemyHealth - playerAttack);
-            console.log(playerName +" attacked " + enemyName + ". " + enemyName + " now has " + enemyHealth + " health remaining."
+            enemy.health = Math.max(0, enemy.health - playerInfo.attack);
+            console.log(playerInfo.name +" attacked " + enemy.name + ". " + enemy.name + " now has " + enemy.health + " health remaining."
             );
         //check enemyHealth
-        if(enemyHealth <= 0){
-            window.alert(enemyName + " has died!");
+        if(enemy.health <= 0){
+            window.alert(enemy.name+ " has died!");
             break;
         }
         else{
-            window.alert(enemyNames +" still has " + enemyHealth + " health left.");
+            window.alert(enemy.name +" still has " + enemy.health + " health left.");
         }
         //subtract enemyAttack from playerHealth
-        var damage = randomNumber(enemyAttack -3, enemyAttack);
-        playerHealth = Math.max(0, playerHealth - damage);
+        var damage = randomNumber(enemy.attack -3, enemy.attack);
+        playerInfo.health = Math.max(0, playerInfo.health - damage);
         console.log(
-            enemyName + " attacked " + playerName + ". " + playerName + " now has " + playerHealth + " health remaining."
+            enemy.name + " attacked " + playerInfo.name + ". " + playerInfo.name + " now has " + playerInfo.health + " health remaining."
         );
         //check playerHealth
-        if(playerHealth <= 0){
-            window.alert(playerName + " has died!");
-            playerMoney = playerMoney + 20;
+        if(playerInfo.health <= 0){
+            window.alert(playerInfo.name + " has died!");
+            playerInfo.money = playerInfo.money + 20;
             break;
         }
         else{
-            window.alert(playerName + " still has " + playerHealth +" health left.");
+            window.alert(playerInfo.name + " still has " + playerInfo.health +" health left.");
         }
     }
 };
@@ -63,20 +55,18 @@ var fight = function(enemyName){
 //startgame function
 var startGame = function(){
     //reset stats
-    playerHealth = 100;
-    playerAttack = 10;
-    playerMoney = 10;
-    for(var i = 0; i < enemyNames.length; i++){
-        if (playerHealth > 0) {
+    playerInfo.reset(); //call reset() to reset player stats
+    for(var i = 0; i < enemyInfo.length; i++){
+        if (playerInfo.health > 0) {
             window.alert("Welcome to Robot Gladiators!  Round " + (i + 1));
             //pick new enemy
-            var pickedEnemyName = enemyNames[i];
+            var pickedEnemyObj = enemyInfo[i];
             //reset enemyHealth before starting new fight between 20-60
-            enemyHealth = randomNumber(40, 60);
+            pickedEnemyObj.health = randomNumber(40, 60);
             //pass new enemy into fight
-            fight(pickedEnemyName);  
+            fight(pickedEnemyObj);  
             //if this isnt the last enemy, option to shop
-            if(playerHealth > 0 && i < enemyNames.length -1){
+            if(playerInfo.health > 0 && i < enemyInfo.length -1){
                 var storeConfirm = window.confirm("The fight is over, visit the shop before next round?");
                 if(storeConfirm){
                     shop();
@@ -93,8 +83,8 @@ var startGame = function(){
 //endgame function
 var endGame = function(){
      window.alert("The game has now ended. Let's see how you did!");
-    if(playerHealth > 0){
-        window.alert("Great job, you've survived the game! you now have a score of " + playerMoney + ".");
+    if(playerInfo.health > 0){
+        window.alert("Great job, you've survived the game! you now have a score of " + playerInfo.money + ".");
     }
     else{
         window.alert("You've lost your robot in battle.");
@@ -113,27 +103,11 @@ var shop = function(){
     switch(shopOptionPrompt){
         case "REFILL":
         case "refill":
-            if(playerMoney >= 7){
-                window.alert("Refilling player's health by 20 for 7 doll hairs");
-                //buy health with mons
-                playerHealth = playerHealth +20;
-                playerMoney = playerMoney - 7;
-            }
-            else{
-                window.alert("Too poor!");
-            }
+          playerInfo.refillHealth();
             break;
         case "UPGRADE":
         case "upgrade":
-            if(playerMoney >= 7){
-                window.alert("Upgrading player's attack by 6 for 7 dol hairs");
-                //buy attack pts
-                playerAttack = playerAttack +6;
-                playerMoney = playerMoney - 7;
-            }
-            else{
-                window.alert("Too poor!");
-            }
+            playerInfo.upgradeAttack();
             break;
         case "LEAVE":
         case "leave":
@@ -147,9 +121,66 @@ var shop = function(){
 };
 
 var randomNumber =function(min, max){
-    var value = Math.floor(Math.random() * (max - min + 1)) + min;
+    var value = Math.floor(Math.random() * (max - min + 1) + min);
     return value;
 };
+//get valid player name
+var getPlayerName = function(){
+    var name = "";
+    while(name === null || name === "" ){
+        name = prompt("What is your robot's name?");
+    }
+    console.log("Your robot's name is " + name);
+    return name;
+  };
+//player stats
+var playerInfo = {
+    name: getPlayerName(),
+    health: 100,
+    attack: 10,
+    money: 10,
+    reset: function(){
+        this.health = 100;
+        this.money = 10;
+        this.attack = 10;
+    },
+    refillHealth: function(){
+        if(this.money >= 7){
+            window.alert("Upgrading player's attack by 6 for 7 doll hairs");
+            this.health += 20;
+            this.money -= 7;
+        }
+        else{
+         window.alert("too poor!");   
+        } 
+    },
+    upgradeAttack: function(){
+        if(this.money >= 7){
+            window.alert("Upgrading player's attack by 6 for 7 doll hairs");
+            this.attack += 6;
+            this.money -= 7;      
+    }
+    else{
+        window.alert("Too poor!");
+    }
+  }
+};
+//robot stats
+var enemyInfo  = [
+    {
+        name: "Roborto",
+        attack: randomNumber(10, 14)
+    },
+    {
+        name: "Amy Android",
+        attack: randomNumber(10, 14)
+    },
+    {
+        name: "Robo Trumble",
+        attack: randomNumber(10, 14)
+    },
+];
+
 startGame();
 
 //wrap logic in startGame() function
@@ -161,3 +192,5 @@ startGame();
 //if enemyHealth <= 0, exit and present shop
 // - prompt "do you wan to shop?"
 // - ^ need shop() function
+
+//****UR AT THE PART IN THE LESSON THAT ADDS SHIT TO THE RESET MINI FUNCITON */
