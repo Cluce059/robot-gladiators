@@ -115,18 +115,26 @@ var startGame = function(){
 //endgame function
 var endGame = function(){
      window.alert("The game has now ended. Let's see how you did!");
-    if(playerInfo.health > 0){
-        window.alert("Great job, you've survived the game! you now have a score of " + playerInfo.money + ".");
+    //check local storange for high score, if there isnt one use 0
+    var highScore = localStorage.getItem("highscore");
+    if(highScore === null){
+        highScore = 0;
+    }
+    //if player has more money than the high score, player has the new high score
+    if(playerInfo.money > highScore){
+        localStorage.setItem("highscore", playerInfo.money);
+        localStorage.setItem("name", playerInfo.name);
+        alert(playerInfo.name + " now has the high score of " +  playerInfo.money + "!");
     }
     else{
-        window.alert("You've lost your robot in battle.");
+        alert(playerinfo.name + " did not beat the high score of " + playerInfo.money + "!");
     }
     var playAgainConfirm = window.confirm("Would you like to play again?");
-    if(playAgainConfirm){
+    if(playagainConfirm){
         startGame();
     }
     else{
-        window.alert("Thank you for playing robot gladiators! come back soon!");
+        window.alert("Thank you for playing Robot Gladiators! Come back soon bicth!");
     }
 };
 //shop function
