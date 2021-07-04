@@ -10,9 +10,9 @@ var fightOrSkip = function(){
     if(promptFight === "skip"|| promptFight == "SKIP"){
         var confirmSkip =  window.confirm("Are you sure you'd like to quit?");
         if(confirmSkip){
-            window.alert(playerInfo.name + " has decided to pussy out this battle, bye pussy ass bitch!");
+            window.alert(playerInfo.name + " has decided to pussy out this battle, bye!");
             //subtract 10 money for pussying out
-            playerInfo.playerMoney =  playerInfor.money - 10;
+            playerInfo.playerMoney =  playerInfo.money - 10;
             shop();
             return true;
         }
@@ -109,18 +109,16 @@ var endGame = function(){
 };
 //shop function
 var shop = function(){
-    var shopOptionPrompt = window.prompt("Would you like to REFILL your health, UPGRADE your attack, or LEAVE the store? Please enter one: 'REFILL', 'UPGRADE', or 'LEAVE' to make a choice."); 
+    var shopOptionPrompt = window.prompt("Would you like to REFILL your health, UPGRADE your attack, or LEAVE the store? Please enter one: 1 = 'REFILL, 2= 'UPGRADE', 3 = 'LEAVE'"); 
+    shopOptionPrompt = parseInt(shopOptionPrompt);
     switch(shopOptionPrompt){
-        case "REFILL":
-        case "refill":
+        case 1:
           playerInfo.refillHealth();
             break;
-        case "UPGRADE":
-        case "upgrade":
+        case 2:
             playerInfo.upgradeAttack();
             break;
-        case "LEAVE":
-        case "leave":
+        case 3:
             window.alert("Leaving the store.");
             break;
         default:
@@ -155,7 +153,7 @@ var playerInfo = {
     },
     refillHealth: function(){
         if(this.money >= 7){
-            window.alert("Upgrading player's attack by 6 for 7 doll hairs");
+            window.alert("Restoring player's health by 6 for 7 doll hairs");
             this.health += 20;
             this.money -= 7;
         }
