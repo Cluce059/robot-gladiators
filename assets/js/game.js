@@ -1,21 +1,31 @@
-
+//valid gight or skip input checker
+var fightOrSkip = function(){
+    var promptFight = window.prompt("Would you like to FIGHT or SKIP this battle? Enter FIGHT or SKIP");
+    //conditional recursive
+    promptFight = promptFight.toLowerCase();
+    if(promptFight === "" || promptFight === null){
+        window.alert("You need to provide a valid answer - what am I the answer machine?")
+        return fightOrSkip();
+    }
+    if(promptFight === "skip"|| promptFight == "SKIP"){
+        var confirmSkip =  window.confirm("Are you sure you'd like to quit?");
+        if(confirmSkip){
+            window.alert(playerInfo.name + " has decided to pussy out this battle, bye pussy ass bitch!");
+            //subtract 10 money for pussying out
+            playerInfo.playerMoney =  playerInfor.money - 10;
+            shop();
+            return true;
+        }
+    }
+};
 //fight function
 var fight = function(enemy){
     console.log(enemy);
     while(enemy.health> 0 && playerInfo.health > 0){
-        var promptFight = window.prompt("Would you like to FIGHT or SKIP this battle? Enter 'FIGHT' or 'SKIP' to choose.");
-        //if skip is chosen
-        if(promptFight == "skip" || promptFight == "SKIP"){
-            var confirmSkip = window.confirm(" Are you sure you'd like to quit?");
-            //if true exit fight
-            if(confirmSkip){
-                window.alert(playerInfo.name+ " has decided to skip this fight. Goodbye!");
-                //subtract playermoney
-                playerInfo.money = Math.max(0, playerInfo.money - 10);
-                console.log("playerMoney", playerInfo.money);
-                break;
-            }
-         }
+        if(fightOrSkip()){
+            //if true, leave fight via break bc user chose to skip
+            break;
+        }
             //subtract playerAttack from enemyHealth
             enemy.health = Math.max(0, enemy.health - playerInfo.attack);
             console.log(playerInfo.name +" attacked " + enemy.name + ". " + enemy.name + " now has " + enemy.health + " health remaining."
@@ -119,7 +129,6 @@ var shop = function(){
             break;
     }
 };
-
 var randomNumber =function(min, max){
     var value = Math.floor(Math.random() * (max - min + 1) + min);
     return value;
